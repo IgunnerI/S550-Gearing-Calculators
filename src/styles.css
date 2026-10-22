@@ -469,19 +469,21 @@ button { cursor: pointer; }
 .row-pick[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 
 /* ── Ratio sheet ────────────────────────────────────── */
-.ratio-sheet { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 3px solid var(--ink); }
+.ratio-sheet { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border-top: 3px solid var(--ink); }
 .ratio-card { padding: 16px 20px 18px; border-left: 1px solid var(--rule); display: grid; gap: 12px; align-content: start; min-width: 0; }
-.ratio-card:first-child { border-left: 0; padding-left: 0; }
+.ratio-card:nth-child(odd) { border-left: 0; padding-left: 0; }
+.ratio-card:nth-child(n + 3) { border-top: 1px solid var(--rule); }
 .ratio-card.is-current { background: linear-gradient(var(--signal), var(--signal)) top / 100% 3px no-repeat; }
 .ratio-card__head h3 { font: 600 24px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.02em; }
 .ratio-card__head p { font: 400 12px/1.4 var(--font-mono); color: var(--ink-3); margin-top: 4px; }
 .ratio-table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .ratio-table th, .ratio-table td { padding: 5px 0; border-bottom: 1px solid var(--rule); text-align: left; }
 .ratio-table thead th { font: 500 10px var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); }
-.ratio-table tbody th { font-weight: 500; width: 3.2em; }
+.ratio-table th:first-child { width: 3.4em; padding-right: 6px; }
+.ratio-table tbody th { font-weight: 500; }
 .ratio-table td.num { font-family: var(--font-mono); white-space: nowrap; padding-right: 10px; }
 .ratio-table td:last-child, .ratio-table th:last-child { text-align: right; }
-.bar-cell { width: 40%; }
+.bar-cell { width: 34%; }
 .ratio-bar { display: block; height: 8px; background: var(--ink); border-radius: 0 2px 2px 0; }
 .tag {
   display: inline-block; margin-left: 6px; padding: 1px 4px;
@@ -547,7 +549,8 @@ button { cursor: pointer; }
   .setup__group:first-child { grid-row: span 2; }
   .setup__restore { grid-column: 1 / -1; }
   .ratio-sheet { grid-template-columns: minmax(0, 1fr); }
-  .ratio-card, .ratio-card:first-child { border-left: 0; padding-inline: 0; border-bottom: 1px solid var(--rule); }
+  .ratio-card, .ratio-card:nth-child(odd) { border-left: 0; padding-inline: 0; border-bottom: 1px solid var(--rule); }
+  .ratio-card:nth-child(n + 3) { border-top: 0; }
   .method__grid { grid-template-columns: minmax(0, 1fr); }
 }
 

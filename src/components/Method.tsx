@@ -23,7 +23,7 @@ export function Method({ box }: { box: Gearbox }) {
             <li>Tire growth is applied as one fixed percentage. Real growth changes with the tire's construction, pressure, load and speed.</li>
             <li>Shift RPMs start at an example value. They are not factory shift points; set them for your engine and tune.</li>
             <li>The top-gear shift speeds are theoretical. They show where the shift point would fall; aerodynamic drag stops the car well before them.</li>
-            <li>2015–2017 MT82: 5th is 1:1. 2018+ MT82-D4: 4th is 1:1. 10R80: 7th is 1:1.</li>
+            <li>2015–2017 MT82: 5th is 1:1. 2018+ MT82-D4: 4th is 1:1. 10R80: 7th is 1:1. The 6R80 has no 1:1 gear.</li>
             <li>Ratios are for the Mustang GT. Other S550 models can use different transmissions; the Shelby GT350 and the Mach 1 manual use a Tremec 6-speed, which isn't covered here.</li>
           </ul>
         </div>
