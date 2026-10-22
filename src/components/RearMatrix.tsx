@@ -58,7 +58,7 @@ export function RearMatrix({ box, rear, shiftRpms, tireHeight, unit, probeMph, o
           </tbody>
         </table>
       </div>
-      <p className="table-note">Speeds in {unitLabel(unit)}. The list matches the rear gear dropdown on the spreadsheet's Ratios tab.</p>
+      <p className="table-note">Speeds in {unitLabel(unit)}.</p>
     </section>
   );
 }

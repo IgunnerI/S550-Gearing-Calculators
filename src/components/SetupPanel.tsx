@@ -95,7 +95,7 @@ export function SetupPanel({ box, tire, tireHeight, setup, onTire, onRear, onAll
       </section>
 
       <button type="button" className="text-button setup__restore" onClick={() => { onRestore(); setAllRpm(box.defaultShiftRpm); }}>
-        Restore the spreadsheet example
+        Restore the defaults
       </button>
     </aside>
   );

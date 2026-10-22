@@ -25,7 +25,6 @@ export function Method({ box }: { box: Gearbox }) {
           </ul>
         </div>
         <p className="method__credit">
-          Built from <span className="num">S550_Shift_Speed_Calculator.xlsx</span>: the 10R80 and MT82 calculator tabs and the Ratios tab.
           Your inputs are saved in this browser only.
         </p>
       </div>

@@ -23,7 +23,7 @@ export function GearTable({ rows, tireHeight, unit, probeMph, onProbe, onShiftRp
         <div>
           <h2 id="table-h" className="section-title">Gear by gear</h2>
           <p className="block__sub">
-            The spreadsheet's full output. Amber-underlined cells are inputs; change a gear's shift point here.
+            Every figure for each gear. Amber-underlined cells are inputs; change a gear's shift point here.
           </p>
         </div>
         <NumberField
@@ -94,7 +94,7 @@ export function GearTable({ rows, tireHeight, unit, probeMph, onProbe, onShiftRp
         </table>
       </div>
       <p className="table-note">
-        OSS is output shaft speed: engine RPM ÷ transmission ratio. Mph per 1,000 rpm in the spreadsheet is shown in your chosen unit.
+        OSS is output shaft speed: engine RPM ÷ transmission ratio.
       </p>
     </section>
   );

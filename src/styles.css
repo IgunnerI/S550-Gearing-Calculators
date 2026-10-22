@@ -516,7 +516,7 @@ button { cursor: pointer; }
 .method__notes { margin: 0; padding-left: 18px; display: grid; gap: 10px; color: var(--band-fg); font-size: 15px; max-width: 62ch; }
 .method__notes li::marker { color: var(--signal); }
 .method__credit { font-size: 13px; color: var(--band-muted); border-top: 1px solid var(--band-2); padding-top: 16px; }
-.method__credit .num { font-family: var(--font-mono); color: var(--band-fg); }
+
 
 /* ── Responsive ─────────────────────────────────────── */
 @media (max-width: 1180px) {
