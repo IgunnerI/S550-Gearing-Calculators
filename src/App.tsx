@@ -81,7 +81,7 @@ export function App() {
             onRear={actions.setRear}
           />
 
-          <RatioSheet current={state.box} onBox={actions.setBox} />
+          <RatioSheet current={state.box} />
         </main>
       </div>
       <Method box={box} />
