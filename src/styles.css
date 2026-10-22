@@ -235,7 +235,7 @@ button { cursor: pointer; }
 .rpm-all { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
 
 /* ── Fields: an amber underline marks an input ── */
-.field { display: grid; gap: 5px; min-width: 0; }
+.field { display: grid; gap: 5px; min-width: 0; align-content: start; }
 .field__label { font-size: 13px; font-weight: 500; color: var(--ink-2); }
 .field__control { position: relative; display: flex; align-items: center; }
 .field__input {
@@ -293,6 +293,8 @@ button { cursor: pointer; }
   letter-spacing: -0.005em;
   text-transform: uppercase;
 }
+
+.hero__note { font-size: 13px; color: var(--ink-3); max-width: 70ch; }
 
 .gear-strip {
   list-style: none; margin: 10px 0 0; padding: 0;
