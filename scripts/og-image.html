@@ -1,0 +1,50 @@
+<!doctype html>
+<!-- Link-preview card (1200×630). Screenshot it to public/og-image.png when the design changes. -->
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  html, body { margin: 0; }
+  body { width: 1200px; height: 630px; background: #10171e; color: #eef1f3; font-family: "Barlow Condensed", sans-serif; position: relative; overflow: hidden; }
+  .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: #f2a31b; }
+  .copy { position: absolute; left: 72px; top: 72px; }
+  .mark { display: inline-block; font-weight: 700; font-size: 64px; line-height: 1; padding: 8px 16px 6px; border: 3px solid #eef1f3; border-radius: 6px; }
+  h1 { margin: 34px 0 0; font-weight: 700; font-size: 132px; line-height: 0.88; letter-spacing: 0.01em; text-transform: uppercase; }
+  .sub { margin-top: 26px; font: 400 26px/1.3 "IBM Plex Mono", monospace; color: #95a1ac; }
+  .boxes { position: absolute; left: 72px; bottom: 64px; display: flex; gap: 14px; }
+  .boxes span { font-weight: 600; font-size: 34px; padding: 6px 16px 4px; border: 2px solid #3a444d; border-radius: 4px; }
+  svg { position: absolute; right: 56px; top: 96px; }
+</style>
+</head>
+<body>
+  <div class="copy">
+    <div class="mark">S550</div>
+    <h1>Shift<br>Speeds</h1>
+    <p class="sub">Mustang GT gearing calculator</p>
+  </div>
+  <div class="boxes"><span>6R80</span><span>10R80</span><span>MT82</span><span>MT82-D4</span></div>
+  <svg id="saw" width="520" height="400" viewBox="0 0 520 400"></svg>
+  <div class="bar"></div>
+<script>
+  // Real 10R80 sawtooth: 315/50R17, 3.15 rear, 7,800 rpm shifts.
+  const ratios = [4.696, 2.985, 2.146, 1.769, 1.52, 1.275, 1, 0.854, 0.689, 0.636];
+  const h = 315 * 50 / 100 * 2 / 25.4 + 17, rear = 3.15, rpm = 7800;
+  const mph = r => rpm / (r * rear) * h * Math.PI * 60 / 63360;
+  const W = 520, H = 400, xMax = 360, yMax = 8500;
+  const x = v => v / xMax * W, y = v => H - v / yMax * H;
+  const svg = document.getElementById("saw"); let out = "";
+  for (let i = 0; i <= 8; i++) out += `<line x1="0" x2="${W}" y1="${y(i * 1000)}" y2="${y(i * 1000)}" stroke="#1f2a33" stroke-width="2"/>`;
+  ratios.forEach((r, i) => {
+    out += `<line x1="0" y1="${H}" x2="${x(mph(r))}" y2="${y(rpm)}" stroke="#2c3843" stroke-width="2"/>`;
+    const prev = ratios[i - 1];
+    const x0 = prev ? x(mph(prev)) : 0, y0 = prev ? y(rpm * r / prev) : H;
+    out += `<line x1="${x0}" y1="${y0}" x2="${x(mph(r))}" y2="${y(rpm)}" stroke="#eef1f3" stroke-width="5" stroke-linecap="round"/>`;
+    const next = ratios[i + 1];
+    if (next) out += `<line x1="${x(mph(r))}" x2="${x(mph(r))}" y1="${y(rpm)}" y2="${y(rpm * next / r)}" stroke="#f2a31b" stroke-width="5" stroke-linecap="round"/>`;
+  });
+  ratios.forEach(r => { out += `<circle cx="${x(mph(r))}" cy="${y(rpm)}" r="8" fill="#f2a31b" stroke="#10171e" stroke-width="4"/>`; });
+  svg.innerHTML = out;
+</script>
+</body>
+</html>
