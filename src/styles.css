@@ -235,7 +235,7 @@ button { cursor: pointer; }
 .rpm-all { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
 
 /* ── Fields: an amber underline marks an input ── */
-.field { display: grid; gap: 5px; min-width: 0; }
+.field { display: grid; gap: 5px; min-width: 0; align-content: start; }
 .field__label { font-size: 13px; font-weight: 500; color: var(--ink-2); }
 .field__control { position: relative; display: flex; align-items: center; }
 .field__input {
@@ -293,6 +293,8 @@ button { cursor: pointer; }
   letter-spacing: -0.005em;
   text-transform: uppercase;
 }
+
+.hero__note { font-size: 13px; color: var(--ink-3); max-width: 70ch; }
 
 .gear-strip {
   list-style: none; margin: 10px 0 0; padding: 0;
@@ -467,19 +469,25 @@ button { cursor: pointer; }
 .row-pick[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 
 /* ── Ratio sheet ────────────────────────────────────── */
-.ratio-sheet { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 3px solid var(--ink); }
-.ratio-card { padding: 16px 20px 18px; border-left: 1px solid var(--rule); display: grid; gap: 12px; align-content: start; min-width: 0; }
-.ratio-card:first-child { border-left: 0; padding-left: 0; }
-.ratio-card.is-current { background: linear-gradient(var(--signal), var(--signal)) top / 100% 3px no-repeat; }
-.ratio-card__head h3 { font: 600 24px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.02em; }
-.ratio-card__head p { font: 400 12px/1.4 var(--font-mono); color: var(--ink-3); margin-top: 4px; }
+.ratio-sheet {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 16px 48px;
+  align-items: start;
+  border-top: 3px solid var(--ink);
+  padding-top: 8px;
+}
+.ratio-sheet__facts { display: grid; gap: 8px; padding-top: 8px; font-size: 14px; color: var(--ink-2); }
+.ratio-sheet__spread { display: grid; gap: 2px; }
+.ratio-sheet__spread .num { font: 600 40px/1 var(--font-display); color: var(--ink); }
 .ratio-table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .ratio-table th, .ratio-table td { padding: 5px 0; border-bottom: 1px solid var(--rule); text-align: left; }
 .ratio-table thead th { font: 500 10px var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); }
-.ratio-table tbody th { font-weight: 500; width: 3.2em; }
+.ratio-table th:first-child { width: 3.4em; padding-right: 6px; }
+.ratio-table tbody th { font-weight: 500; }
 .ratio-table td.num { font-family: var(--font-mono); white-space: nowrap; padding-right: 10px; }
 .ratio-table td:last-child, .ratio-table th:last-child { text-align: right; }
-.bar-cell { width: 40%; }
+.bar-cell { width: 45%; }
 .ratio-bar { display: block; height: 8px; background: var(--ink); border-radius: 0 2px 2px 0; }
 .tag {
   display: inline-block; margin-left: 6px; padding: 1px 4px;
@@ -488,10 +496,7 @@ button { cursor: pointer; }
   vertical-align: 1px;
 }
 .tag--quiet { border-color: var(--rule-strong); color: var(--ink-3); }
-.ratio-card__foot { display: grid; gap: 6px; font-size: 13px; color: var(--ink-2); }
-.ratio-card__foot .num { font-family: var(--font-mono); font-weight: 500; color: var(--ink); }
 .source { font-size: 12px; color: var(--ink-3); }
-.ratio-card__foot .text-button { justify-self: start; margin-top: 4px; }
 
 /* ── Method footer ──────────────────────────────────── */
 .method { background: var(--band); color: var(--band-fg); }
@@ -545,7 +550,6 @@ button { cursor: pointer; }
   .setup__group:first-child { grid-row: span 2; }
   .setup__restore { grid-column: 1 / -1; }
   .ratio-sheet { grid-template-columns: minmax(0, 1fr); }
-  .ratio-card, .ratio-card:first-child { border-left: 0; padding-inline: 0; border-bottom: 1px solid var(--rule); }
   .method__grid { grid-template-columns: minmax(0, 1fr); }
 }
 

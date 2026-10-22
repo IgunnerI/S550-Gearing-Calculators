@@ -1,6 +1,7 @@
 import { rpmAt, type GearRow } from "../lib/gearing";
 import { fmtOverall, fmtRatio, fmtRpm, fmtSpeed, fromUnit, ordinal, toUnit, unitLabel, type SpeedUnit } from "../lib/format";
-import { between, NumberField } from "./NumberField";
+import { check } from "../lib/limits";
+import { NumberField } from "./NumberField";
 
 interface Props {
   rows: GearRow[];
@@ -13,7 +14,7 @@ interface Props {
   onActiveGear: (gear: number | null) => void;
 }
 
-const rpmRange = between(1000, 10000, "Shift RPM");
+const rpmRange = check("shiftRpm");
 
 export function GearTable({ rows, tireHeight, unit, probeMph, onProbe, onShiftRpm, activeGear, onActiveGear }: Props) {
   const other: SpeedUnit = unit === "mph" ? "kmh" : "mph";
@@ -32,7 +33,7 @@ export function GearTable({ rows, tireHeight, unit, probeMph, onProbe, onShiftRp
           label="Cruise speed"
           suffix={unitLabel(unit)}
           value={Math.round(toUnit(probeMph, unit) * 10) / 10}
-          validate={between(1, 400, "Cruise speed")}
+          validate={check("probe")}
           onCommit={(v) => v !== null && onProbe(fromUnit(v, unit))}
         />
       </div>

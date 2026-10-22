@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { GEARBOXES, EXAMPLE_TIRE } from "../data/gearboxes";
-import { calculatedHeight, effectiveHeight, gearTable, rpmAt } from "./gearing";
+import { GEARBOXES, EXAMPLE_TIRE, REAR_RATIOS } from "../data/gearboxes";
+import { calculatedHeight, effectiveHeight, gearTable, KM_PER_MILE, rpmAt, rpmDrop } from "./gearing";
+import { fmtRpm, fmtSpeed, fromUnit, toUnit } from "./format";
 
 // Reference results for the default setups: speed at shift, OSS, RPM after upshift, mph per 1,000 rpm.
 const ref10r80 = [
@@ -23,6 +24,32 @@ const refMt82 = [
   [175.87697151007185, 7500, 4875, 23.450262868009577],
   [270.5799561693413, 11538.461538461537, null, 36.07732748924551],
 ];
+// Worked out separately in Python from the same formulas: 315/50R17, 3.73 rear, 7,500 RPM.
+const refMt82D4 = [
+  [54.333324531996254, 2316.9601482854496, 4874.884151992585, 7.244443270932833],
+  [83.59171649718243, 3564.638783269962, 5068.916349809886, 11.145562199624324],
+  [123.68282103380582, 5274.261603375528, 5274.261603375528, 16.491042804507444],
+  [175.87697151007185, 7500, 6105, 23.450262868009577],
+  [216.06507556519887, 9213.759213759215, 5730.958230958231, 28.808676742026513],
+  [282.76040435702873, 12057.877813504823, null, 37.701387247603826],
+];
+
+// Worked out separately in Python: 315/50R17, 3.15 rear, 7,000 RPM through the 6R80.
+const ref6r80 = [
+  [46.61309911946483, 1678.6570743405275, 3928.057553956834, 6.659014159923546],
+  [83.06693304622577, 2991.4529914529917, 4547.008547008547, 11.866704720889395],
+  [127.8793574527423, 4605.263157894737, 5249.999999999999, 18.268479636106044],
+  [170.50580993698975, 6140.350877192983, 5342.105263157895, 24.35797284814139],
+  [223.4214061243314, 8045.977011494253, 5551.724137931034, 31.91734373204734],
+  [281.705251200244, 10144.927536231884, null, 40.24360731432056],
+];
+
+// 10R80 10th-gear speed at 7,800 RPM for every preset rear ratio, from the same Python check.
+const ref10thByRear: Record<number, number> = {
+  3.15: 340.55203548061826, 3.31: 324.09030566886634, 3.55: 302.179975144774, 3.73: 287.5975634755892,
+  3.9: 275.06125942665324, 4.09: 262.2833525095227, 4.1: 261.643637015597, 4.3: 249.47416552649943,
+  4.56: 235.24976135174293, 4.88: 219.82354749261228,
+};
 
 function check(rows: ReturnType<typeof gearTable>, expected: (number | null)[][]) {
   rows.forEach((r, i) => {
@@ -53,5 +80,61 @@ describe("matches reference results", () => {
   it("rpmAt inverts mphAt", () => {
     const row = gearTable([1], 3.15, [7800], h)[0];
     expect(rpmAt(row.mph, row.overall, h)).toBeCloseTo(7800, 9);
+  });
+});
+
+describe("other configurations", () => {
+  const h = effectiveHeight(EXAMPLE_TIRE);
+
+  it("MT82-D4: 2018+, 3.73 rear, 7,500 RPM", () => {
+    check(gearTable(GEARBOXES["mt82-18"].ratios, 3.73, Array(6).fill(7500), h), refMt82D4);
+  });
+
+  it("6R80: 2015-2017, 3.15 rear, 7,000 RPM", () => {
+    check(gearTable(GEARBOXES["6r80"].ratios, 3.15, Array(6).fill(7000), h), ref6r80);
+  });
+
+  it("every preset rear ratio", () => {
+    expect(REAR_RATIOS).toHaveLength(Object.keys(ref10thByRear).length);
+    for (const rear of REAR_RATIOS) {
+      const top = gearTable(GEARBOXES["10r80"].ratios, rear, Array(10).fill(7800), h)[9];
+      expect(top.mph, `rear ${rear}`).toBeCloseTo(ref10thByRear[rear], 9);
+    }
+  });
+
+  it("different shift RPM per gear", () => {
+    const rows = gearTable([3.66, 2.43], 3.73, [6000, 7000], h);
+    expect(rows[0].rpmAfter).toBeCloseTo((6000 * 2.43) / 3.66, 9);
+    expect(rows[1].oss).toBeCloseTo(7000 / 2.43, 9);
+  });
+
+  it("upshift drop matches RPM after upshift", () => {
+    const ratios = GEARBOXES["10r80"].ratios;
+    const rows = gearTable(ratios, 3.15, Array(10).fill(7800), h);
+    ratios.slice(0, -1).forEach((_, i) => {
+      expect(1 - rows[i].rpmAfter! / 7800).toBeCloseTo(rpmDrop(ratios, i)!, 12);
+    });
+    expect(rpmDrop(ratios, 9)).toBeNull();
+  });
+});
+
+describe("units and display", () => {
+  it("km/h uses the exact mile", () => {
+    const row = gearTable(GEARBOXES["10r80"].ratios, 3.15, Array(10).fill(7800), effectiveHeight(EXAMPLE_TIRE))[0];
+    expect(row.kmh).toBeCloseTo(74.22691194478257, 9);
+    expect(KM_PER_MILE).toBe(1.609344);
+  });
+
+  it("converts between mph and km/h both ways", () => {
+    expect(toUnit(100, "kmh")).toBeCloseTo(160.9344, 12);
+    expect(fromUnit(160.9344, "kmh")).toBeCloseTo(100, 12);
+    expect(toUnit(70, "mph")).toBe(70);
+    expect(fromUnit(toUnit(123.4, "kmh"), "kmh")).toBeCloseTo(123.4, 12);
+  });
+
+  it("formats like the original calculator", () => {
+    expect(fmtRpm(4958.049403747871)).toBe("4,958");
+    expect(fmtSpeed(46.12246477122515)).toBe("46.1");
+    expect(fmtSpeed(1000)).toBe("1,000.0");
   });
 });

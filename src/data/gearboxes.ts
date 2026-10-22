@@ -1,10 +1,10 @@
 // Transmission ratios and default inputs. Sources are listed per gearbox.
 
-export type GearboxId = "10r80" | "mt82-1517" | "mt82-18";
+export type GearboxId = "6r80" | "10r80" | "mt82-1517" | "mt82-18";
 
 export interface Gearbox {
   id: GearboxId;
-  family: "10R80" | "MT82";
+  family: "6R80" | "10R80" | "MT82";
   name: string;
   short: string;
   years: string;
@@ -21,6 +21,20 @@ export interface Gearbox {
 }
 
 export const GEARBOXES: Record<GearboxId, Gearbox> = {
+  "6r80": {
+    id: "6r80",
+    family: "6R80",
+    name: "Ford 6R80",
+    short: "6R80",
+    years: "2015–2017",
+    kind: "automatic",
+    ratios: [4.17, 2.34, 1.52, 1.14, 0.87, 0.69],
+    direct: null,
+    defaultShiftRpm: 7000,
+    defaultRear: 3.15,
+    source: "LMR Mustang automatic transmission specs (2011–2017 Mustang 5.0L 6R80).",
+    slipNote: "Assumes zero slip and a locked converter.",
+  },
   "10r80": {
     id: "10r80",
     family: "10R80",
@@ -65,7 +79,7 @@ export const GEARBOXES: Record<GearboxId, Gearbox> = {
   },
 };
 
-export const GEARBOX_ORDER: GearboxId[] = ["10r80", "mt82-1517", "mt82-18"];
+export const GEARBOX_ORDER: GearboxId[] = ["6r80", "10r80", "mt82-1517", "mt82-18"];
 
 /** Rear gear ratios offered as presets. */
 export const REAR_RATIOS = [3.15, 3.31, 3.55, 3.73, 3.9, 4.09, 4.1, 4.3, 4.56, 4.88];

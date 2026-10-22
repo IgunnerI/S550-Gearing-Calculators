@@ -37,10 +37,17 @@ export function App() {
               <span>{box.name} {box.years}</span>
               <span>{fmtRear(setup.rear)} rear</span>
               <span>{t.override === null ? tireSize(t.width, t.aspect, t.wheel) : `${fmtHeight(t.override)} in tire`}{t.growthPct !== 0 ? ` +${t.growthPct}%` : ""}</span>
-              <span>{uniform ? `${fmtRpm(setup.shiftRpms[0])} rpm shifts` : "Per-gear shift points"}</span>
+              <span>
+                {uniform ? `${fmtRpm(setup.shiftRpms[0])} rpm shifts` : "Per-gear shift points"}
+                {uniform && setup.shiftRpms[0] === box.defaultShiftRpm ? " (example)" : ""}
+              </span>
             </p>
             <h1 id="hero-h" className="hero__title">Speed at every shift</h1>
             <GearStrip rows={rows} unit={state.unit} activeGear={activeGear} onActiveGear={setActiveGear} />
+            <p className="hero__note">
+              Theoretical speeds: where each shift point falls with zero slip. They are not speeds the car can reach.
+              Drag and engine power stop it well short of the top-gear figures.
+            </p>
           </section>
 
           <ShiftChart
@@ -74,7 +81,7 @@ export function App() {
             onRear={actions.setRear}
           />
 
-          <RatioSheet current={state.box} onBox={actions.setBox} />
+          <RatioSheet current={state.box} />
         </main>
       </div>
       <Method box={box} />

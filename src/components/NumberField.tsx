@@ -98,7 +98,3 @@ export function NumberField({
     </div>
   );
 }
-
-export const positive = (what: string) => (n: number) => (n > 0 ? null : `${what} must be greater than zero.`);
-export const between = (lo: number, hi: number, what: string) => (n: number) =>
-  n >= lo && n <= hi ? null : `${what} must be between ${lo} and ${hi}.`;

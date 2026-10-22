@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { EXAMPLE_TIRE, GEARBOXES, GEARBOX_ORDER, type GearboxId } from "../data/gearboxes";
 import { effectiveHeight, gearTable, type TireInput } from "./gearing";
+import { inRange } from "./limits";
 import type { SpeedUnit } from "./format";
 
 export interface DrivetrainSetup {
@@ -34,23 +35,53 @@ export function exampleState(): AppState {
 
 const STORAGE_KEY = "s550-shift-speeds:v1";
 
-function load(): AppState {
+/**
+ * Rebuilds state from whatever was saved in the browser. Saved data can be stale or edited by hand,
+ * so every value is checked against the same limits as the input fields; anything that fails falls
+ * back to the example value.
+ */
+export function restoreState(saved: unknown): AppState {
   const fallback = exampleState();
+  if (typeof saved !== "object" || saved === null) return fallback;
+  const s = saved as Record<string, unknown>;
+  const tire = (typeof s.tire === "object" && s.tire !== null ? s.tire : {}) as Record<string, unknown>;
+  const setups = (typeof s.setups === "object" && s.setups !== null ? s.setups : {}) as Record<string, unknown>;
+
+  const state: AppState = {
+    box: typeof s.box === "string" && s.box in GEARBOXES ? (s.box as GearboxId) : fallback.box,
+    unit: s.unit === "mph" || s.unit === "kmh" ? s.unit : fallback.unit,
+    tire: {
+      width: inRange("width", tire.width) ? tire.width : fallback.tire.width,
+      aspect: inRange("aspect", tire.aspect) ? tire.aspect : fallback.tire.aspect,
+      wheel: inRange("wheel", tire.wheel) ? tire.wheel : fallback.tire.wheel,
+      override: inRange("override", tire.override) ? tire.override : null,
+      growthPct: inRange("growthPct", tire.growthPct) ? tire.growthPct : fallback.tire.growthPct,
+    },
+    setups: { ...fallback.setups },
+    probeMph: inRange("probe", s.probeMph) ? s.probeMph : fallback.probeMph,
+  };
+  for (const id of GEARBOX_ORDER) {
+    const setup = setups[id] as Record<string, unknown> | undefined;
+    const rear = setup?.rear;
+    const rpms = setup?.shiftRpms;
+    if (
+      inRange("rear", rear) &&
+      Array.isArray(rpms) &&
+      rpms.length === GEARBOXES[id].ratios.length &&
+      rpms.every((r) => inRange("shiftRpm", r))
+    ) {
+      state.setups[id] = { rear, shiftRpms: rpms as number[] };
+    }
+  }
+  return state;
+}
+
+function load(): AppState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return fallback;
-    const saved = JSON.parse(raw) as Partial<AppState>;
-    const state: AppState = { ...fallback, ...saved, tire: { ...fallback.tire, ...saved.tire }, setups: { ...fallback.setups } };
-    for (const id of GEARBOX_ORDER) {
-      const s = saved.setups?.[id];
-      if (s && Number.isFinite(s.rear) && Array.isArray(s.shiftRpms) && s.shiftRpms.length === GEARBOXES[id].ratios.length) {
-        state.setups[id] = s;
-      }
-    }
-    if (!GEARBOXES[state.box]) state.box = fallback.box;
-    return state;
+    return raw ? restoreState(JSON.parse(raw)) : exampleState();
   } catch {
-    return fallback;
+    return exampleState();
   }
 }
 
