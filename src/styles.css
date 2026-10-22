@@ -234,7 +234,7 @@ button { cursor: pointer; }
 
 .rpm-all { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
 
-/* ── Fields: amber underline marks an input, like the yellow cells in the workbook ── */
+/* ── Fields: an amber underline marks an input ── */
 .field { display: grid; gap: 5px; min-width: 0; }
 .field__label { font-size: 13px; font-weight: 500; color: var(--ink-2); }
 .field__control { position: relative; display: flex; align-items: center; }

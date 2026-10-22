@@ -1,4 +1,4 @@
-// Mirrors the formulas on the calculator tabs of the spreadsheet.
+// Shift-speed math.
 // MPH = RPM ÷ (trans ratio × rear ratio) × tire height × π × 60 ÷ 63,360. OSS = RPM ÷ trans ratio.
 
 export const INCHES_PER_MILE = 63360;

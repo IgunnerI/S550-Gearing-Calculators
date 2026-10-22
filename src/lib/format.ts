@@ -1,4 +1,4 @@
-// Display formats follow the number formats used in the spreadsheet.
+// Display precision for each kind of figure.
 import { KM_PER_MILE } from "./gearing";
 
 export type SpeedUnit = "mph" | "kmh";

@@ -1,4 +1,4 @@
-// Every figure here is copied from the "Ratios" tab of S550_Shift_Speed_Calculator.xlsx.
+// Transmission ratios and default inputs. Sources are listed per gearbox.
 
 export type GearboxId = "10r80" | "mt82-1517" | "mt82-18";
 
@@ -12,9 +12,9 @@ export interface Gearbox {
   ratios: number[];
   /** Gear that runs 1:1, if any. */
   direct: number | null;
-  /** Default shift RPM used on the calculator tab. */
+  /** Default shift RPM for every gear. */
   defaultShiftRpm: number;
-  /** Default rear ratio used on the calculator tab. */
+  /** Default rear ratio. */
   defaultRear: number;
   source: string;
   slipNote: string;
@@ -67,8 +67,8 @@ export const GEARBOXES: Record<GearboxId, Gearbox> = {
 
 export const GEARBOX_ORDER: GearboxId[] = ["10r80", "mt82-1517", "mt82-18"];
 
-/** Rear gear dropdown list, in the order it appears on the Ratios tab. */
+/** Rear gear ratios offered as presets. */
 export const REAR_RATIOS = [3.15, 3.31, 3.55, 3.73, 3.9, 4.09, 4.1, 4.3, 4.56, 4.88];
 
-/** Tire used in the spreadsheet's example inputs: 315/50R17, no override, 0% growth. */
+/** Default tire: 315/50R17, no override, 0% growth. */
 export const EXAMPLE_TIRE = { width: 315, aspect: 50, wheel: 17, override: null, growthPct: 0 };

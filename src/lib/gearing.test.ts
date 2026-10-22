@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { GEARBOXES, EXAMPLE_TIRE } from "../data/gearboxes";
 import { calculatedHeight, effectiveHeight, gearTable, rpmAt } from "./gearing";
 
-// Cached values read from the workbook with openpyxl (data_only=True).
-const excel10r80 = [
+// Reference results for the default setups: speed at shift, OSS, RPM after upshift, mph per 1,000 rpm.
+const ref10r80 = [
   [46.12246477122515, 1660.9880749574106, 4958.049403747871, 5.913136509131428],
   [72.55983067526743, 2613.065326633166, 5607.638190954774, 9.302542394265057],
   [100.92781666620377, 3634.6691519105316, 6429.729729729729, 12.939463675154327],
@@ -15,7 +15,7 @@ const excel10r80 = [
   [314.35572505903235, 11320.754716981133, 7200.000000000001, 40.30201603320928],
   [340.55203548061826, 12264.150943396226, null, 43.66051736931004],
 ];
-const excelMt82 = [
+const refMt82 = [
   [48.053817352478646, 2049.1803278688526, 4979.508196721311, 6.407175646997153],
   [72.37735453089375, 3086.4197530864194, 5216.049382716049, 9.650313937452502],
   [104.0692139112851, 4437.869822485207, 5857.988165680474, 13.87589518817135],
@@ -35,17 +35,17 @@ function check(rows: ReturnType<typeof gearTable>, expected: (number | null)[][]
   });
 }
 
-describe("matches the spreadsheet", () => {
+describe("matches reference results", () => {
   const h = effectiveHeight(EXAMPLE_TIRE);
   it("tire height", () => {
     expect(calculatedHeight(EXAMPLE_TIRE)).toBeCloseTo(29.401574803149607, 12);
     expect(h).toBeCloseTo(29.401574803149607, 12);
   });
-  it("10R80 tab: 3.15 rear, 7,800 RPM", () => {
-    check(gearTable(GEARBOXES["10r80"].ratios, 3.15, Array(10).fill(7800), h), excel10r80);
+  it("10R80: 3.15 rear, 7,800 RPM", () => {
+    check(gearTable(GEARBOXES["10r80"].ratios, 3.15, Array(10).fill(7800), h), ref10r80);
   });
-  it("MT82 tab: 2015-2017, 3.73 rear, 7,500 RPM", () => {
-    check(gearTable(GEARBOXES["mt82-1517"].ratios, 3.73, Array(6).fill(7500), h), excelMt82);
+  it("MT82: 2015-2017, 3.73 rear, 7,500 RPM", () => {
+    check(gearTable(GEARBOXES["mt82-1517"].ratios, 3.73, Array(6).fill(7500), h), refMt82);
   });
   it("override and growth", () => {
     expect(effectiveHeight({ ...EXAMPLE_TIRE, override: 28, growthPct: 5 })).toBeCloseTo(29.4, 12);
